@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portfolio | CS & Electronics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        },
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            text: '#f8fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Circuit board background pattern */
+        .circuit-pattern {
+            background-color: #0f172a;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Chat Widget Animations */
+        .chat-enter {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Formatting for AI text */
+        .prose-ai strong { color: #fff; font-weight: 600; }
+        .prose-ai ul { list-style-type: disc; padding-left: 1.2rem; margin: 0.5rem 0; }
+    </style>
+</head>
+<body class="bg-dark-bg text-dark-text font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-dark-bg/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <span class="text-2xl font-bold bg-gradient-to-r from-brand-500 to-purple-500 bg-clip-text text-transparent">
+                        &lt;Dev/&gt;
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="hover:text-brand-500 transition-colors px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#about" class="hover:text-brand-500 transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="#skills" class="hover:text-brand-500 transition-colors px-3 py-2 rounded-md text-sm font-medium">Skills</a>
+                        <a href="#projects" class="hover:text-brand-500 transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white p-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-card border-b border-white/10">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/5">Home</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/5">About</a>
+                <a href="#skills" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/5">Skills</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/5">Projects</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 circuit-pattern min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="flex flex-wrap gap-3">
+                        <div class="inline-block px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 font-medium text-sm">
+                            👋 Hello, World!
+                        </div>
+                        <div class="inline-block px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-medium text-sm animate-pulse">
+                            🟢 Open to Work: Data Analyst
+                        </div>
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-bold leading-tight">
+                        I bridge the gap between <br>
+                        <span class="text-brand-500">Hardware</span> & <span class="text-purple-500">Software</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg max-w-lg">
+                        Second-year Computer Science & Electronics student with a <strong class="text-purple-400">Minor in AI & Data Science</strong>. Passionate about turning raw data into insights and building efficient systems.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="copyEmail()" class="px-8 py-3 rounded-lg border border-white/10 hover:bg-white/5 font-semibold transition-all">
+                            Copy Email
+                        </button>
+                    </div>
+                    <div class="flex gap-6 text-gray-400">
+                        <a href="https://github.com/rihan-png" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-github text-2xl"></i></a>
+                        <a href="https://www.linkedin.com/in/rihanmahamadasifbagwan/" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-linkedin text-2xl"></i></a>
+                        <a href="#" class="hover:text-white transition-colors"><i class="fab fa-twitter text-2xl"></i></a>
+                    </div>
+                </div>
+                <div class="relative hidden md:block">
+                    <!-- Decorative Abstract Shape -->
+                    <div class="absolute -inset-4 bg-gradient-to-r from-brand-500 to-purple-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+                    <div class="relative bg-dark-card border border-white/10 rounded-2xl p-8 animate-float shadow-2xl">
+                        <div class="flex items-center gap-2 mb-4 border-b border-white/10 pb-4">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="ml-2 text-xs text-gray-500">main.cpp</span>
+                        </div>
+                        <pre class="font-mono text-sm text-gray-300 overflow-x-auto">
+<code><span class="text-purple-400">#include</span> <span class="text-green-400">&lt;iostream&gt;</span>
+
+<span class="text-brand-500">class</span> <span class="text-yellow-400">Student</span> {
+<span class="text-brand-500">public</span>:
+    <span class="text-brand-500">void</span> <span class="text-blue-400">introduce</span>() {
+        std::cout << <span class="text-green-400">"CS & Electronics Major"</span>;
+        std::cout << <span class="text-purple-400">"\nMinor in AI & DS"</span>;
+    }
+};
+
+<span class="text-brand-500">int</span> <span class="text-blue-400">main</span>() {
+    Student me;
+    me.introduce();
+    <span class="text-brand-500">return</span> <span class="text-purple-400">0</span>;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-dark-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-12 text-center">About Me</h2>
+            <div class="bg-dark-card border border-white/10 rounded-2xl p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-8 items-start">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold mb-4 text-brand-500">The Intersection of Logic & Data</h3>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            I am currently a second-year undergraduate student with a unique academic profile: a Major in <strong>Computer Science & Electronics</strong> complemented by a Minor Degree in <strong>Artificial Intelligence & Data Science</strong>.
+                        </p>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            This combination allows me to understand systems from the hardware level up to advanced predictive algorithms. I have developed a strong command of C, C++, and Python, and I am actively applying these skills in Data Structures and Artificial Intelligence concepts.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 mt-8">
+                            <div class="p-4 bg-dark-bg rounded-lg border border-white/5">
+                                <span class="block text-2xl font-bold text-white">2nd</span>
+                                <span class="text-sm text-gray-500">Year Student</span>
+                            </div>
+                            <div class="p-4 bg-dark-bg rounded-lg border border-white/5">
+                                <span class="block text-lg font-bold text-white">AI & Data Science</span>
+                                <span class="text-sm text-gray-500">Minor Degree</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/3">
+                        <h4 class="font-semibold mb-4 text-white">Education & Focus</h4>
+                        <div class="space-y-4">
+                            <div class="bg-brand-900/20 border border-brand-500/20 p-4 rounded-lg">
+                                <h5 class="text-brand-400 text-sm font-bold uppercase tracking-wider">Major</h5>
+                                <p class="text-white">Computer Science & Electronics</p>
+                            </div>
+                            <div class="bg-purple-900/20 border border-purple-500/20 p-4 rounded-lg">
+                                <h5 class="text-purple-400 text-sm font-bold uppercase tracking-wider">Minor Degree</h5>
+                                <p class="text-white">AI & Data Science</p>
+                            </div>
+                            <div class="space-y-2 mt-4">
+                                <div class="flex items-center gap-3 text-gray-400">
+                                    <i class="fas fa-check-circle text-green-500"></i> Data Structures & Algorithms
+                                </div>
+                                <div class="flex items-center gap-3 text-gray-400">
+                                    <i class="fas fa-check-circle text-green-500"></i> Artificial Intelligence Basics
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-dark-card/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-12 text-center">Technical Arsenal</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Python -->
+                <div class="p-6 bg-dark-card rounded-xl border border-white/10 hover:border-brand-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fab fa-python text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Python</h3>
+                    <p class="text-sm text-gray-400">Scripting, automation, and basic data analysis using libraries like Pandas.</p>
+                </div>
+
+                <!-- AI & DS (New) -->
+                <div class="p-6 bg-dark-card rounded-xl border border-white/10 hover:border-purple-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-brain text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">AI & Data Science</h3>
+                    <p class="text-sm text-gray-400">Minor degree focus. AI concepts, data cleaning, and statistical modeling.</p>
+                </div>
+
+                <!-- C++ -->
+                <div class="p-6 bg-dark-card rounded-xl border border-white/10 hover:border-brand-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-blue-700/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-xl font-bold text-blue-500">C++</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">C++</h3>
+                    <p class="text-sm text-gray-400">Object-oriented programming, memory management, and competitive coding.</p>
+                </div>
+
+                <!-- C Language -->
+                <div class="p-6 bg-dark-card rounded-xl border border-white/10 hover:border-brand-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-gray-700/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-xl font-bold text-gray-300">C</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">C Language</h3>
+                    <p class="text-sm text-gray-400">Low-level system programming, pointers, and embedded basics.</p>
+                </div>
+
+                <!-- Excel -->
+                <div class="p-6 bg-dark-card rounded-xl border border-white/10 hover:border-brand-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-table text-2xl text-green-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Microsoft Excel</h3>
+                    <p class="text-sm text-gray-400">Data organization, formulas, pivot tables, and visualization.</p>
+                </div>
+
+                <!-- Power BI -->
+                <div class="p-6 bg-dark-card rounded-xl border border-white/10 hover:border-brand-500/50 transition-all group">
+                    <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-chart-pie text-2xl text-yellow-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Power BI</h3>
+                    <p class="text-sm text-gray-400">Data visualization, dashboard creation, and business intelligence reporting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-dark-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-12 text-center">Academic Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="group relative bg-dark-card rounded-xl overflow-hidden border border-white/10 hover:shadow-2xl hover:shadow-brand-500/10 transition-all">
+                    <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <i class="fas fa-user-graduate text-5xl text-gray-600 group-hover:text-brand-500 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-semibold px-2 py-1 bg-blue-500/10 text-blue-400 rounded">C++</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-purple-500/10 text-purple-400 rounded">OOP</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Student Management System</h3>
+                        <p class="text-gray-400 text-sm mb-4">A console-based application to manage student records, grades, and attendance using file handling and OOP principles.</p>
+                        <div class="flex items-center gap-4">
+                            <button onclick="openModal('cpp-project')" class="text-brand-500 text-sm font-semibold hover:text-brand-400 flex items-center gap-2 transition-colors focus:outline-none">
+                                View Code <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                            <a href="https://github.com/rihan-png/projects-/tree/main" target="_blank" class="text-gray-400 text-sm font-semibold hover:text-white flex items-center gap-2 transition-colors">
+                                GitHub <i class="fas fa-external-link-alt text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative bg-dark-card rounded-xl overflow-hidden border border-white/10 hover:shadow-2xl hover:shadow-brand-500/10 transition-all">
+                    <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <i class="fas fa-chart-bar text-5xl text-gray-600 group-hover:text-green-500 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-semibold px-2 py-1 bg-yellow-500/10 text-yellow-400 rounded">Python</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-green-500/10 text-green-400 rounded">Excel</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Data Analysis Tool</h3>
+                        <p class="text-gray-400 text-sm mb-4">Scripts to automate data cleaning from Excel sheets and generate basic statistical reports using Python.</p>
+                        <div class="flex items-center gap-4">
+                            <button onclick="openModal('python-project')" class="text-brand-500 text-sm font-semibold hover:text-brand-400 flex items-center gap-2 transition-colors focus:outline-none">
+                                View Code <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                            <a href="https://github.com/rihan-png/projects-/tree/main" target="_blank" class="text-gray-400 text-sm font-semibold hover:text-white flex items-center gap-2 transition-colors">
+                                GitHub <i class="fas fa-external-link-alt text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="group relative bg-dark-card rounded-xl overflow-hidden border border-white/10 hover:shadow-2xl hover:shadow-brand-500/10 transition-all">
+                    <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <i class="fas fa-microchip text-5xl text-gray-600 group-hover:text-red-500 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-semibold px-2 py-1 bg-red-500/10 text-red-400 rounded">Electronics</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-gray-500/10 text-gray-400 rounded">Logic</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Logic Gate Simulator</h3>
+                        <p class="text-gray-400 text-sm mb-4">A basic simulation of AND, OR, and NOT gates demonstrating boolean algebra concepts fundamental to circuit design.</p>
+                        <div class="flex items-center gap-4">
+                            <button onclick="openModal('logic-project')" class="text-brand-500 text-sm font-semibold hover:text-brand-400 flex items-center gap-2 transition-colors focus:outline-none">
+                                View Code <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                            <a href="https://github.com/rihan-png/projects-/tree/main" target="_blank" class="text-gray-400 text-sm font-semibold hover:text-white flex items-center gap-2 transition-colors">
+                                GitHub <i class="fas fa-external-link-alt text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: Expense Tracker -->
+                <div class="group relative bg-dark-card rounded-xl overflow-hidden border border-white/10 hover:shadow-2xl hover:shadow-brand-500/10 transition-all">
+                    <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <i class="fas fa-wallet text-5xl text-gray-600 group-hover:text-green-400 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-semibold px-2 py-1 bg-yellow-500/10 text-yellow-400 rounded">Python</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-blue-500/10 text-blue-400 rounded">SQLite</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Expense Tracker</h3>
+                        <p class="text-gray-400 text-sm mb-4">A financial utility app to track daily expenses and manage budget categories using Python and a persistent SQLite database.</p>
+                        <div class="flex items-center gap-4">
+                            <button onclick="openModal('expense-project')" class="text-brand-500 text-sm font-semibold hover:text-brand-400 flex items-center gap-2 transition-colors focus:outline-none">
+                                View Code
+                            </button>
+                            <a href="https://github.com/rihan-png/Expense_tarcker-by-Python-and-Sqlite" target="_blank" class="text-gray-400 text-sm font-semibold hover:text-white flex items-center gap-2 transition-colors">
+                                GitHub <i class="fas fa-external-link-alt text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-bg py-8 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2024 Student Portfolio. Built with HTML, Tailwind & Passion.</p>
+        </div>
+    </footer>
+
+    <!-- Code Preview Modal -->
+    <div id="code-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-dark-card border border-white/10 rounded-xl w-full max-w-2xl transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="flex items-center justify-between p-4 border-b border-white/10">
+                <h3 id="modal-title" class="text-xl font-bold text-white">Project Code</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-0 overflow-hidden bg-[#1e1e1e]">
+                <pre class="p-4 overflow-x-auto text-sm font-mono text-gray-300 max-h-[60vh]"><code id="modal-code">
+// Code will appear here
+                </code></pre>
+            </div>
+            
+            <!-- AI Analysis Section -->
+            <div id="ai-analysis-panel" class="hidden border-t border-white/10 bg-brand-900/10 p-4">
+                <h4 class="text-sm font-bold text-brand-400 mb-2 flex items-center gap-2">
+                    <i class="fas fa-robot"></i> Gemini Analysis ✨
+                </h4>
+                <div id="ai-analysis-content" class="text-sm text-gray-300 prose-ai leading-relaxed"></div>
+            </div>
+
+            <div class="p-4 border-t border-white/10 flex justify-between items-center bg-dark-card rounded-b-xl">
+                <button onclick="analyzeCode()" id="analyze-btn" class="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-medium transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2">
+                    <i class="fas fa-magic"></i> Analyze with Gemini
+                </button>
+                <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-4 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 max-w-sm text-sm">
+        Opening Email Client...
+    </div>
+
+    <!-- Chat Widget (Floating) -->
+    <div class="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-4">
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden w-80 sm:w-96 bg-dark-card border border-white/10 rounded-2xl shadow-2xl overflow-hidden chat-enter origin-bottom-right">
+            <div class="bg-gradient-to-r from-brand-600 to-purple-600 p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2 text-white">
+                    <i class="fas fa-robot text-lg"></i>
+                    <h3 class="font-bold text-sm">Portfolio Assistant</h3>
+                </div>
+                <button onclick="toggleChat()" class="text-white/80 hover:text-white transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="chat-messages" class="h-80 overflow-y-auto p-4 space-y-3 bg-dark-bg/95 text-sm scrollbar-thin scrollbar-thumb-white/10">
+                <!-- Welcome Message -->
+                <div class="flex items-start gap-2">
+                    <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center flex-shrink-0 text-brand-400 border border-brand-500/30">
+                        <i class="fas fa-robot text-xs"></i>
+                    </div>
+                    <div class="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-3 text-gray-300">
+                        Hi! I'm an AI assistant powered by Gemini. Ask me anything about Rihan's skills, projects, or background!
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-dark-card border-t border-white/10">
+                <form onsubmit="handleChatSubmit(event)" class="relative">
+                    <input id="chat-input" type="text" placeholder="Ask a question..." class="w-full bg-dark-bg border border-white/10 rounded-full pl-4 pr-12 py-2 text-sm text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                    <button type="submit" class="absolute right-1 top-1 p-1.5 rounded-full bg-brand-600 text-white hover:bg-brand-500 transition-colors w-7 h-7 flex items-center justify-center">
+                        <i class="fas fa-paper-plane text-xs"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <button onclick="toggleChat()" class="w-14 h-14 rounded-full bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-lg shadow-brand-500/30 hover:scale-110 transition-transform flex items-center justify-center group">
+            <i class="fas fa-comment-dots text-2xl group-hover:animate-pulse"></i>
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></span>
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+        </button>
+    </div>
+
+    <script>
+        const apiKey = ""; // API Key provided by environment
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth Scroll for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const menu = document.getElementById('mobile-menu');
+                if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Copy Email Function
+        function copyEmail() {
+            const email = "rihanbagwan74@gmail.com";
+            const tempInput = document.createElement("input");
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            const toast = document.getElementById('toast');
+            toast.textContent = "Email copied to clipboard!";
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        }
+
+        // --- GEMINI API HELPERS ---
+        async function callGemini(prompt, systemInstruction = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+            } catch (error) {
+                console.error("Gemini Error:", error);
+                return "I'm having trouble connecting to Gemini. Please try again later.";
+            }
+        }
+
+        function formatText(text) {
+             // Basic Markdown to HTML conversion
+             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+        }
+
+        // --- CHATBOT LOGIC ---
+        function toggleChat() {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.classList.toggle('hidden');
+            if (!chatWindow.classList.contains('hidden')) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        function getPortfolioContext() {
+            const about = document.getElementById('about').innerText;
+            const skills = document.getElementById('skills').innerText;
+            const projects = document.getElementById('projects').innerText;
+            return `
+                You are an AI assistant for Rihan's Student Portfolio.
+                Use the following content to answer questions:
+                [ABOUT]: ${about}
+                [SKILLS]: ${skills}
+                [PROJECTS]: ${projects}
+                
+                Goal: Be helpful, professional, and concise. Represent Rihan well.
+                If asked for contact info, provide: rihanbagwan74@gmail.com.
+            `;
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessageToChat('user', message);
+            input.value = '';
+
+            const loadingId = addMessageToChat('ai', 'Thinking...', true);
+            const context = getPortfolioContext();
+            const response = await callGemini(message, context);
+            updateMessage(loadingId, response);
+        }
+
+        function addMessageToChat(role, text, isLoading = false) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            div.id = id;
+            div.className = `flex items-start gap-2 ${role === 'user' ? 'flex-row-reverse' : ''}`;
+            
+            const avatar = role === 'ai' 
+                ? `<div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center flex-shrink-0 text-brand-400 border border-brand-500/30"><i class="fas fa-robot text-xs"></i></div>`
+                : `<div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0 text-purple-400 border border-purple-500/30"><i class="fas fa-user text-xs"></i></div>`;
+            
+            const bubbleClass = role === 'ai' 
+                ? 'bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-gray-300' 
+                : 'bg-brand-600 text-white rounded-2xl rounded-tr-none';
+
+            div.innerHTML = `${avatar}<div class="${bubbleClass} p-3 text-sm max-w-[80%] leading-relaxed ${isLoading ? 'animate-pulse' : ''}">${formatText(text)}</div>`;
+            
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function updateMessage(id, text) {
+            const div = document.getElementById(id).querySelector('div.max-w-\\[80\\%\\]');
+            div.classList.remove('animate-pulse');
+            div.innerHTML = formatText(text);
+        }
+
+        // --- PROJECT CODE LOGIC ---
+        const projectCode = {
+            'cpp-project': `// Student Management System (C++)
+// Compile: g++ main.cpp -o main
+// Run: ./main
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Student {
+    string name;
+    int rollNo;
+public:
+    Student(string n, int r) : name(n), rollNo(r) {}
+    void display() {
+        cout << "Name: " << name << " | Roll: " << rollNo << endl;
+    }
+};
+
+int main() {
+    vector<Student> db;
+    db.push_back(Student("Alex", 101));
+    db.push_back(Student("Sam", 102));
+    
+    cout << "--- Student Database ---" << endl;
+    for(auto &s : db) s.display();
+    return 0;
+}`,
+            'python-project': `# Data Analysis Tool (Python)
+# Prerequisite: pip install pandas matplotlib
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Demo Data (No Excel file needed for this test)
+data = {
+    'Student': ['Alice', 'Bob', 'Charlie', 'David'],
+    'Score': [85, 92, 78, 90]
+}
+
+def analyze_scores():
+    # Create DataFrame from mock data
+    df = pd.DataFrame(data)
+    
+    # Calculate basic stats
+    avg_score = df['Score'].mean()
+    print(f"Average Class Score: {avg_score:.2f}")
+    
+    # Generate visualization
+    print("Generating histogram...")
+    # Note: plt.show() opens a window
+    df['Score'].hist(bins=5)
+    plt.title('Score Distribution')
+    plt.show() 
+
+if __name__ == "__main__":
+    analyze_scores()`,
+            'logic-project': `// Logic Gate Simulator (C)
+// Compile: gcc logic.c -o logic
+// Run: ./logic
+
+#include <stdio.h>
+
+// Basic Gate Functions
+int AND(int a, int b) { return a && b; }
+int OR(int a, int b)  { return a || b; }
+int NOT(int a)        { return !a; }
+
+int main() {
+    int inputA = 1, inputB = 0;
+    
+    printf("--- Logic Gate Simulator ---\\n");
+    printf("Inputs: A=%d, B=%d\\n", inputA, inputB);
+    printf("A AND B = %d\\n", AND(inputA, inputB));
+    printf("A OR B  = %d\\n", OR(inputA, inputB));
+    printf("NOT A   = %d\\n", NOT(inputA));
+    
+    return 0;
+}`,
+            'expense-project': `# Expense Tracker (Python + SQLite)
+# Run: python expense_tracker.py
+
+import sqlite3
+from datetime import datetime
+
+def init_db():
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS expenses
+                 (date text, category text, amount real)''')
+    conn.commit()
+    return conn
+
+def add_expense(conn, category, amount):
+    date = datetime.now().strftime("%Y-%m-%d")
+    conn.execute("INSERT INTO expenses VALUES (?, ?, ?)", 
+                 (date, category, amount))
+    conn.commit()
+    print(f"Added: {category} - \${amount}")
+
+# Main execution block
+if __name__ == "__main__":
+    conn = init_db()
+    print("--- Expense Tracker Started ---")
+    add_expense(conn, "Coffee", 5.50)
+    add_expense(conn, "Books", 25.00)
+    print("Expenses saved to 'expenses.db'")`
+        };
+
+        function openModal(projectId) {
+            const modal = document.getElementById('code-modal');
+            const content = document.getElementById('modal-content');
+            const codeBlock = document.getElementById('modal-code');
+            const title = document.getElementById('modal-title');
+            
+            // Reset AI Panel
+            document.getElementById('ai-analysis-panel').classList.add('hidden');
+            document.getElementById('ai-analysis-content').innerHTML = '';
+
+            codeBlock.textContent = projectCode[projectId] || "// No code available preview.";
+            
+            const titles = {
+                'cpp-project': 'Student Management System.cpp',
+                'python-project': 'data_analysis.py',
+                'logic-project': 'logic_gates.c',
+                'expense-project': 'expense_tracker.py'
+            };
+            title.textContent = titles[projectId] || 'Project Code';
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('code-modal');
+            const content = document.getElementById('modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        document.getElementById('code-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        async function analyzeCode() {
+            const btn = document.getElementById('analyze-btn');
+            const panel = document.getElementById('ai-analysis-panel');
+            const content = document.getElementById('ai-analysis-content');
+            const code = document.getElementById('modal-code').innerText;
+            
+            // UI Loading State
+            const originalBtnText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            panel.classList.remove('hidden');
+            content.innerHTML = '<div class="animate-pulse">Gemini is analyzing the code...</div>';
+
+            const systemPrompt = "You are a senior developer reviewing code for a student. Explain the code simply, highlight the key logic, and suggest one specific optimization or best practice improvement. Keep it concise.";
+            
+            const response = await callGemini(`Analyze this code:\n\n${code}`, systemPrompt);
+            
+            content.innerHTML = formatText(response);
+            btn.innerHTML = originalBtnText;
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
