@@ -51,19 +51,6 @@
             background-image: radial-gradient(#1e293b 1px, transparent 1px);
             background-size: 30px 30px;
         }
-
-        /* Chat Widget Animations */
-        .chat-enter {
-            animation: slideUp 0.3s ease-out forwards;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Formatting for AI text */
-        .prose-ai strong { color: #fff; font-weight: 600; }
-        .prose-ai ul { list-style-type: disc; padding-left: 1.2rem; margin: 0.5rem 0; }
     </style>
 </head>
 <body class="bg-dark-bg text-dark-text font-sans antialiased selection:bg-brand-500 selection:text-white">
@@ -408,18 +395,7 @@
                 </code></pre>
             </div>
             
-            <!-- AI Analysis Section -->
-            <div id="ai-analysis-panel" class="hidden border-t border-white/10 bg-brand-900/10 p-4">
-                <h4 class="text-sm font-bold text-brand-400 mb-2 flex items-center gap-2">
-                    <i class="fas fa-robot"></i> Gemini Analysis ✨
-                </h4>
-                <div id="ai-analysis-content" class="text-sm text-gray-300 prose-ai leading-relaxed"></div>
-            </div>
-
-            <div class="p-4 border-t border-white/10 flex justify-between items-center bg-dark-card rounded-b-xl">
-                <button onclick="analyzeCode()" id="analyze-btn" class="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-medium transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2">
-                    <i class="fas fa-magic"></i> Analyze with Gemini
-                </button>
+            <div class="p-4 border-t border-white/10 flex justify-end items-center bg-dark-card rounded-b-xl">
                 <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-colors">
                     Close
                 </button>
@@ -432,51 +408,7 @@
         Opening Email Client...
     </div>
 
-    <!-- Chat Widget (Floating) -->
-    <div class="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-4">
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden w-80 sm:w-96 bg-dark-card border border-white/10 rounded-2xl shadow-2xl overflow-hidden chat-enter origin-bottom-right">
-            <div class="bg-gradient-to-r from-brand-600 to-purple-600 p-4 flex justify-between items-center">
-                <div class="flex items-center gap-2 text-white">
-                    <i class="fas fa-robot text-lg"></i>
-                    <h3 class="font-bold text-sm">Portfolio Assistant</h3>
-                </div>
-                <button onclick="toggleChat()" class="text-white/80 hover:text-white transition-colors">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="chat-messages" class="h-80 overflow-y-auto p-4 space-y-3 bg-dark-bg/95 text-sm scrollbar-thin scrollbar-thumb-white/10">
-                <!-- Welcome Message -->
-                <div class="flex items-start gap-2">
-                    <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center flex-shrink-0 text-brand-400 border border-brand-500/30">
-                        <i class="fas fa-robot text-xs"></i>
-                    </div>
-                    <div class="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-3 text-gray-300">
-                        Hi! I'm an AI assistant powered by Gemini. Ask me anything about Rihan's skills, projects, or background!
-                    </div>
-                </div>
-            </div>
-            <div class="p-3 bg-dark-card border-t border-white/10">
-                <form onsubmit="handleChatSubmit(event)" class="relative">
-                    <input id="chat-input" type="text" placeholder="Ask a question..." class="w-full bg-dark-bg border border-white/10 rounded-full pl-4 pr-12 py-2 text-sm text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
-                    <button type="submit" class="absolute right-1 top-1 p-1.5 rounded-full bg-brand-600 text-white hover:bg-brand-500 transition-colors w-7 h-7 flex items-center justify-center">
-                        <i class="fas fa-paper-plane text-xs"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Toggle Button -->
-        <button onclick="toggleChat()" class="w-14 h-14 rounded-full bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-lg shadow-brand-500/30 hover:scale-110 transition-transform flex items-center justify-center group">
-            <i class="fas fa-comment-dots text-2xl group-hover:animate-pulse"></i>
-            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></span>
-            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-        </button>
-    </div>
-
     <script>
-        const apiKey = ""; // API Key provided by environment
-
         // Mobile Menu Toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -512,103 +444,6 @@
             toast.textContent = "Email copied to clipboard!";
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
-        }
-
-        // --- GEMINI API HELPERS ---
-        async function callGemini(prompt, systemInstruction = "") {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] }
-            };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
-            } catch (error) {
-                console.error("Gemini Error:", error);
-                return "I'm having trouble connecting to Gemini. Please try again later.";
-            }
-        }
-
-        function formatText(text) {
-             // Basic Markdown to HTML conversion
-             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\n/g, '<br>');
-        }
-
-        // --- CHATBOT LOGIC ---
-        function toggleChat() {
-            const chatWindow = document.getElementById('chat-window');
-            chatWindow.classList.toggle('hidden');
-            if (!chatWindow.classList.contains('hidden')) {
-                document.getElementById('chat-input').focus();
-            }
-        }
-
-        function getPortfolioContext() {
-            const about = document.getElementById('about').innerText;
-            const skills = document.getElementById('skills').innerText;
-            const projects = document.getElementById('projects').innerText;
-            return `
-                You are an AI assistant for Rihan's Student Portfolio.
-                Use the following content to answer questions:
-                [ABOUT]: ${about}
-                [SKILLS]: ${skills}
-                [PROJECTS]: ${projects}
-                
-                Goal: Be helpful, professional, and concise. Represent Rihan well.
-                If asked for contact info, provide: rihanbagwan74@gmail.com.
-            `;
-        }
-
-        async function handleChatSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (!message) return;
-
-            addMessageToChat('user', message);
-            input.value = '';
-
-            const loadingId = addMessageToChat('ai', 'Thinking...', true);
-            const context = getPortfolioContext();
-            const response = await callGemini(message, context);
-            updateMessage(loadingId, response);
-        }
-
-        function addMessageToChat(role, text, isLoading = false) {
-            const container = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            const id = 'msg-' + Date.now();
-            div.id = id;
-            div.className = `flex items-start gap-2 ${role === 'user' ? 'flex-row-reverse' : ''}`;
-            
-            const avatar = role === 'ai' 
-                ? `<div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center flex-shrink-0 text-brand-400 border border-brand-500/30"><i class="fas fa-robot text-xs"></i></div>`
-                : `<div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0 text-purple-400 border border-purple-500/30"><i class="fas fa-user text-xs"></i></div>`;
-            
-            const bubbleClass = role === 'ai' 
-                ? 'bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-gray-300' 
-                : 'bg-brand-600 text-white rounded-2xl rounded-tr-none';
-
-            div.innerHTML = `${avatar}<div class="${bubbleClass} p-3 text-sm max-w-[80%] leading-relaxed ${isLoading ? 'animate-pulse' : ''}">${formatText(text)}</div>`;
-            
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-            return id;
-        }
-
-        function updateMessage(id, text) {
-            const div = document.getElementById(id).querySelector('div.max-w-\\[80\\%\\]');
-            div.classList.remove('animate-pulse');
-            div.innerHTML = formatText(text);
         }
 
         // --- PROJECT CODE LOGIC ---
@@ -729,10 +564,6 @@ if __name__ == "__main__":
             const codeBlock = document.getElementById('modal-code');
             const title = document.getElementById('modal-title');
             
-            // Reset AI Panel
-            document.getElementById('ai-analysis-panel').classList.add('hidden');
-            document.getElementById('ai-analysis-content').innerHTML = '';
-
             codeBlock.textContent = projectCode[projectId] || "// No code available preview.";
             
             const titles = {
@@ -764,28 +595,7 @@ if __name__ == "__main__":
         document.getElementById('code-modal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
-
-        async function analyzeCode() {
-            const btn = document.getElementById('analyze-btn');
-            const panel = document.getElementById('ai-analysis-panel');
-            const content = document.getElementById('ai-analysis-content');
-            const code = document.getElementById('modal-code').innerText;
-            
-            // UI Loading State
-            const originalBtnText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
-            panel.classList.remove('hidden');
-            content.innerHTML = '<div class="animate-pulse">Gemini is analyzing the code...</div>';
-
-            const systemPrompt = "You are a senior developer reviewing code for a student. Explain the code simply, highlight the key logic, and suggest one specific optimization or best practice improvement. Keep it concise.";
-            
-            const response = await callGemini(`Analyze this code:\n\n${code}`, systemPrompt);
-            
-            content.innerHTML = formatText(response);
-            btn.innerHTML = originalBtnText;
-            btn.disabled = false;
-        }
     </script>
 </body>
 </html>
+
