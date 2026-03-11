@@ -28,10 +28,15 @@
     <!-- Theme Init: runs before render to prevent flash of wrong theme -->
     <script>
         (function () {
-            const saved = localStorage.getItem('theme');
-            if (saved === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
+            try {
+                const saved = localStorage.getItem('theme');
+                if (saved === 'light') {
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (e) {
+                // localStorage unavailable (privacy mode) — keep default dark theme
                 document.documentElement.classList.add('dark');
             }
         })();
@@ -152,6 +157,22 @@
         .stats-bar-bg {
             background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #7c3aed 100%);
         }
+
+        /* ── Respect prefers-reduced-motion ─────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto !important; }
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0s !important;
+                transition-delay: 0s !important;
+            }
+            .progress-fill {
+                transition: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -193,7 +214,8 @@
                         class="p-2 rounded-full border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
                         <i id="theme-icon-mobile" class="fas fa-sun text-yellow-400 text-lg"></i>
                     </button>
-                    <button onclick="toggleMobileMenu()" aria-label="Open navigation menu"
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu"
+                            aria-controls="mobile-menu" aria-expanded="false"
                         class="text-gray-600 dark:text-gray-300 hover:text-brand-500 p-2">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -681,6 +703,9 @@
          CODE PREVIEW MODAL
     ════════════════════════════════════════════ -->
     <div id="code-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="modal-title"
          class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div id="modal-content"
              class="bg-white dark:bg-dark-card border border-gray-200 dark:border-white/10 rounded-xl w-full max-w-2xl transform scale-95 transition-transform duration-300">
@@ -715,7 +740,9 @@
 
     <script>
         // ── Initialize AOS ────────────────────────────────────────
-        AOS.init({ duration: 800, once: true });
+        if (window.AOS && typeof AOS.init === 'function') {
+            AOS.init({ duration: 800, once: true });
+        }
 
         // ── Theme Toggle ──────────────────────────────────────────
         /** Sync both desktop and mobile theme icon */
@@ -732,13 +759,11 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                html.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
+            const wasDark = html.classList.contains('dark');
+            html.classList.toggle('dark');
+            try {
+                localStorage.setItem('theme', wasDark ? 'light' : 'dark');
+            } catch (e) { /* storage unavailable — continue without persisting */ }
             updateThemeIcons();
         }
 
@@ -747,19 +772,25 @@
 
         // ── Mobile Menu Toggle ────────────────────────────────────
         function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+            const menu = document.getElementById('mobile-menu');
+            const btn  = document.getElementById('mobile-menu-btn');
+            const isHidden = menu.classList.toggle('hidden');
+            btn.setAttribute('aria-expanded', String(!isHidden));
         }
 
         // ── Smooth Scroll for Anchor Links ────────────────────────
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
                 e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (!targetId || targetId === '#') return;
 
                 // Close mobile menu if open
                 const menu = document.getElementById('mobile-menu');
-                if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
+                if (!menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                    document.getElementById('mobile-menu-btn').setAttribute('aria-expanded', 'false');
+                }
 
                 const targetEl = document.querySelector(targetId);
                 if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
@@ -767,7 +798,7 @@
         });
 
         // ── Active Nav Link Tracking (IntersectionObserver) ───────
-        const navLinks = document.querySelectorAll('nav a.nav-link');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
         const sections  = document.querySelectorAll('section[id]');
 
         const sectionObserver = new IntersectionObserver(entries => {
@@ -788,24 +819,34 @@
         // ── Copy Email (Modern Clipboard API) ─────────────────────
         function copyEmail() {
             const email = 'rihanbagwan74@gmail.com';
-            const showToast = () => {
+
+            const showToast = (message) => {
                 const toast = document.getElementById('toast');
-                toast.textContent = 'Email copied to clipboard!';
+                toast.textContent = message;
                 toast.classList.remove('translate-y-20', 'opacity-0');
                 setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
             };
 
+            const fallbackCopy = () => {
+                try {
+                    const tmp = document.createElement('input');
+                    tmp.value = email;
+                    document.body.appendChild(tmp);
+                    tmp.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tmp);
+                    showToast('Email copied to clipboard!');
+                } catch (e) {
+                    showToast('Unable to copy — please copy manually.');
+                }
+            };
+
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(email).then(showToast).catch(showToast);
+                navigator.clipboard.writeText(email)
+                    .then(() => showToast('Email copied to clipboard!'))
+                    .catch(() => fallbackCopy());
             } else {
-                // Fallback for older browsers
-                const tmp = document.createElement('input');
-                tmp.value = email;
-                document.body.appendChild(tmp);
-                tmp.select();
-                document.execCommand('copy');
-                document.body.removeChild(tmp);
-                showToast();
+                fallbackCopy();
             }
         }
 
@@ -970,6 +1011,8 @@ if __name__ == "__main__":
         };
 
         // ── Modal Open / Close ────────────────────────────────────
+        let _modalTrigger = null; // element that opened the modal — restored on close
+
         function openModal(projectId) {
             const modal   = document.getElementById('code-modal');
             const content = document.getElementById('modal-content');
@@ -986,12 +1029,18 @@ if __name__ == "__main__":
             };
             title.textContent = titles[projectId] || 'Project Code';
 
+            // Store which element triggered the modal so we can restore focus on close
+            _modalTrigger = document.activeElement;
+
             modal.classList.remove('hidden');
             // Tiny delay lets the browser paint before starting the transition
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 content.classList.remove('scale-95');
                 content.classList.add('scale-100');
+                // Move focus into the modal for keyboard / screen-reader users
+                const closeBtn = modal.querySelector('button[aria-label="Close modal"]');
+                if (closeBtn) closeBtn.focus();
             }, 10);
         }
 
@@ -1002,12 +1051,26 @@ if __name__ == "__main__":
             modal.classList.add('opacity-0');
             content.classList.remove('scale-100');
             content.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                // Restore focus to the element that opened the modal
+                if (_modalTrigger && typeof _modalTrigger.focus === 'function') {
+                    _modalTrigger.focus();
+                }
+            }, 300);
         }
 
         // Close modal when clicking the backdrop
         document.getElementById('code-modal').addEventListener('click', function (e) {
             if (e.target === this) closeModal();
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                const modal = document.getElementById('code-modal');
+                if (!modal.classList.contains('hidden')) closeModal();
+            }
         });
     </script>
 </body>
